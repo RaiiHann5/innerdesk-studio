@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  /* Diagonal hairlines for days outside the shown month. Hard stops, so it reads as a pattern rather than a gradient. */
+  .bg-hatch {
+    background-image: repeating-linear-gradient(135deg, transparent 0 6px, rgb(var(--line) / 0.7) 6px 7px);
+  }
+}
+
+@layer components {
+  /* The journal editor's document. TipTap renders plain elements, so the look is set here. */
+  .journal-doc {
+    @apply text-md text-ink;
+  }
+  .journal-doc > * + * {
+    @apply mt-3;
+  }
+  .journal-doc h2 {
+    @apply text-lg font-bold tracking-tight;
+  }
+  .journal-doc h3 {
+    @apply text-md font-bold tracking-tight;
+  }
+  .journal-doc blockquote {
+    @apply border-l-2 border-faint pl-4 text-muted;
+  }
+  .journal-doc ul:not([data-type='taskList']) {
+    @apply list-disc pl-5;
+  }
+  .journal-doc ol {
+    @apply list-decimal pl-5;
+  }
+  .journal-doc ul[data-type='taskList'] {
+    @apply list-none p-0;
+  }
+  .journal-doc ul[data-type='taskList'] li {
+    @apply flex items-start gap-2;
+  }
+  .journal-doc ul[data-type='taskList'] li > label {
+    @apply flex h-6 shrink-0 items-center;
+  }
+  .journal-doc ul[data-type='taskList'] li > div {
+    @apply min-w-0 flex-1;
+  }
+  .journal-doc ul[data-type='taskList'] input[type='checkbox'] {
+    @apply size-4 cursor-pointer;
+    accent-color: rgb(var(--accent));
+  }
+  .journal-doc ul[data-type='taskList'] li[data-checked='true'] > div {
+    @apply text-muted line-through;
+  }
+  .journal-doc p.is-editor-empty:first-child::before {
+    @apply pointer-events-none float-left h-0 text-muted;
+    content: attr(data-placeholder);
+  }
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-bg font-ui text-base text-ink antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+  :focus-visible {
+    /* accent-text, not accent: the plain orange is 2.8:1 on the page background, under the 3:1 a focus ring needs. */
+    outline: 2px solid rgb(var(--accent-text));
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+  ::placeholder {
+    @apply text-muted;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--line)) transparent;
+  }
+  dialog::backdrop {
+    background: rgb(20 18 16 / 0.4);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* A cover travelling from the shelf to its page is motion too, and the rule above does not reach the browser's own transition layers. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
